@@ -1,0 +1,18 @@
+table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  th {
+    text-align: center;
+    padding: 8px;
+  }
+  
+  td {
+    text-align: left;
+    padding: 8px;
+  }
+  
+  .dataframe {
+      font-family: 'Courier New', Courier, monospace;
+  }

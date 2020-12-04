@@ -3,35 +3,14 @@ from splinter import Browser
 from bs4 import BeautifulSoup
 from webdriver_manager.chrome import ChromeDriverManager
 import requests
-from flask import Flask, render_template
-import pymongo
-
-app = Flask(__name__)
-
-#establish connection to MongoDB via pymongo:
-conn = 'mongodb://localhost:27017'
-client = pymongo.MongoClient(conn)
-db = client.mars_db
 
 def init_browser():
     # @NOTE: Replace the path with your actual path to the chromedriver
     executable_path = {'executable_path': ChromeDriverManager().install()}
     return Browser("chrome", **executable_path, headless=False)
 
-@app.route("/")
-def index():
-    # write a statement that finds all the items in the db and sets it to a variable
-    #foods = list(produce.find())
-    #print(foods)
-
-    # render an index.html template and pass it the data you retrieved from the database
-
-    return render_template("index.html")
-
-@app.route("/scrape") 
-
-def scrape ():
-    
+def scrape():
+    mars = {}
     #Mars News
     url = 'https://mars.nasa.gov/news/?page=0'
     html = requests.get(url)
@@ -127,10 +106,11 @@ def scrape ():
         hem_items = {'title': hemisphere_title, 'img_url': hem_li} 
         hemisphere_image_urls.append(hem_items)
 
+    #update the dictionary with the items scraped and return it for use in app.py
+    mars["news_title"] = news_title
+    mars["paragraph"] = news_p
+    mars["image"] = final_img
+    mars["table"] = html_table
+    mars["mars_hemispheres"] = hemisphere_image_urls
 
-    mars = {'news title': news_title, 'paragraph': news_p, 'image': final_img, 'table': html_table, 'Mars Hemispheres': hemisphere_image_urls}
-
-    return mars
-
-if __name__ == "__main__":
-    app.run(debug=True)    
+    return mars 
